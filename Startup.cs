@@ -34,7 +34,7 @@ namespace MMM_Bracket.API
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
       services.AddEntityFrameworkNpgsql().AddDbContext<mmm_bracketContext>().BuildServiceProvider();
-      services.Configure<Database>(Configuration.GetSection("Database"));
+      services.Configure<DatabaseSecrets>(Configuration.GetSection("Database"));
 
       services.AddScoped<IAnimalsRepository, AnimalsRepository>();
       services.AddScoped<IAnimalsService, AnimalsService>();
