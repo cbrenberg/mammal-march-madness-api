@@ -1,19 +1,23 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Options;
 using MMM_Bracket.API.Domain.Models;
 
 namespace MMM_Bracket.API.Persistence.Contexts
 {
   public partial class mmm_bracketContext : DbContext
   {
+
+    private readonly DatabaseSecrets _databaseSecrets;
     public mmm_bracketContext()
     {
     }
 
-    public mmm_bracketContext(DbContextOptions<mmm_bracketContext> options)
+    public mmm_bracketContext(DbContextOptions<mmm_bracketContext> options, IOptions<DatabaseSecrets> databaseSecrets)
         : base(options)
     {
+      _databaseSecrets = databaseSecrets.Value ?? throw new ArgumentException(nameof(databaseSecrets));
     }
 
     public virtual DbSet<Animals> Animals { get; set; }
@@ -27,8 +31,7 @@ namespace MMM_Bracket.API.Persistence.Contexts
     {
       if (!optionsBuilder.IsConfigured)
       {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-        optionsBuilder.UseNpgsql("Host=localhost;Database=mmm_bracket;Username=Christopher;");
+        optionsBuilder.UseNpgsql(_databaseSecrets.ConnectionString);
       }
     }
 

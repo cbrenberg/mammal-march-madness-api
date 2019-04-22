@@ -20,6 +20,7 @@ namespace MMM_Bracket.API
 {
   public class Startup
   {
+
     public Startup(IConfiguration configuration)
     {
       Configuration = configuration;
@@ -33,6 +34,7 @@ namespace MMM_Bracket.API
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
       services.AddEntityFrameworkNpgsql().AddDbContext<mmm_bracketContext>().BuildServiceProvider();
+      services.Configure<Database>(Configuration.GetSection("Database"));
 
       services.AddScoped<IAnimalsRepository, AnimalsRepository>();
       services.AddScoped<IAnimalsService, AnimalsService>();
