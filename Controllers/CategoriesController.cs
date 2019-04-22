@@ -10,30 +10,33 @@ namespace MMM_Bracket.API.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-  public class AnimalController : ControllerBase
+  public class CategoriesController : ControllerBase
   {
-    private readonly IAnimalService _animalService;
+    private readonly ICategoryService _categoryService;
 
-    public AnimalController(IAnimalService animalService)
+    public CategoriesController(ICategoryService categoryService)
     {
-      _animalService = animalService;
+      _categoryService = categoryService;
     }
 
 
     // GET api/animals
     [HttpGet]
-    public async Task<IEnumerable<Animal>> GetAllAsync()
+    public async Task<IEnumerable<Category>> GetAllAsync()
     {
-      var animals = await _animalService.ListAsync();
-      return animals;
+      var categories = await _categoryService.ListAsync();
+
+      return categories;
     }
 
-    // // GET api/animals/5
-    // [HttpGet("{id}")]
-    // public ActionResult<string> Get(int id)
-    // {
-    //   return "value";
-    // }
+    // GET api/animals/5
+    [HttpGet("{id}")]
+    public async Task<Category> Get(int id)
+    {
+      var category = await _categoryService.GetById(id);
+
+      return category;
+    }
 
     // // POST api/animals
     // [HttpPost]

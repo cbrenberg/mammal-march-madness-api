@@ -23,7 +23,7 @@ namespace MMM_Bracket.API.Persistence.Contexts
     public virtual DbSet<Animal> Animals { get; set; }
     public virtual DbSet<Battles> Battles { get; set; }
     public virtual DbSet<BracketPicks> BracketPicks { get; set; }
-    public virtual DbSet<Categories> Categories { get; set; }
+    public virtual DbSet<Category> Categories { get; set; }
     public virtual DbSet<Participants> Participants { get; set; }
     public virtual DbSet<Users> Users { get; set; }
 
@@ -98,7 +98,7 @@ namespace MMM_Bracket.API.Persistence.Contexts
                   .HasConstraintName("Bracket_Picks_fk1");
       });
 
-      modelBuilder.Entity<Categories>(entity =>
+      modelBuilder.Entity<Category>(entity =>
       {
         entity.Property(e => e.Id).HasColumnName("id");
 

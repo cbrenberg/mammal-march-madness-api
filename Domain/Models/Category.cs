@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace MMM_Bracket.API.Domain.Models
 {
-  public partial class Categories
+  public partial class Category
   {
-    public Categories()
+    public Category()
     {
       Animals = new HashSet<Animal>();
     }

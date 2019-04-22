@@ -15,7 +15,7 @@ namespace MMM_Bracket.API.Domain.Models
     public string Name { get; set; }
     public int InitialSeed { get; set; }
 
-    public virtual Categories Category { get; set; }
+    public virtual Category Category { get; set; }
     // public virtual ICollection<Participants> Participants { get; set; }
   }
 }
