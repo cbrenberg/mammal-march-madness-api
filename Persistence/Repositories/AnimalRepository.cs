@@ -7,13 +7,13 @@ using MMM_Bracket.API.Persistence.Contexts;
 
 namespace MMM_Bracket.API.Persistence.Repositories
 {
-  public class AnimalsRepository : BaseRepository, IAnimalsRepository
+  public class AnimalRepository : BaseRepository, IAnimalRepository
   {
-    public AnimalsRepository(mmm_bracketContext context) : base(context)
+    public AnimalRepository(mmm_bracketContext context) : base(context)
     {
     }
 
-    public async Task<IEnumerable<Animals>> ListAsync()
+    public async Task<IEnumerable<Animal>> ListAsync()
     {
       return await _context.Animals.ToListAsync();
     }

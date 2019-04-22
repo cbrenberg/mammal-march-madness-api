@@ -7,7 +7,7 @@ namespace MMM_Bracket.API.Domain.Models
   {
     public Categories()
     {
-      Animals = new HashSet<Animals>();
+      Animals = new HashSet<Animal>();
     }
 
     public int Id { get; set; }
@@ -15,6 +15,6 @@ namespace MMM_Bracket.API.Domain.Models
     public string Description { get; set; }
     public int Year { get; set; }
 
-    public virtual ICollection<Animals> Animals { get; set; }
+    public virtual ICollection<Animal> Animals { get; set; }
   }
 }

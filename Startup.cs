@@ -36,8 +36,8 @@ namespace MMM_Bracket.API
       services.AddEntityFrameworkNpgsql().AddDbContext<mmm_bracketContext>().BuildServiceProvider();
       services.Configure<DatabaseSecrets>(Configuration.GetSection("Database"));
 
-      services.AddScoped<IAnimalsRepository, AnimalsRepository>();
-      services.AddScoped<IAnimalsService, AnimalsService>();
+      services.AddScoped<IAnimalRepository, AnimalRepository>();
+      services.AddScoped<IAnimalService, AnimalService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -4,8 +4,8 @@ using MMM_Bracket.API.Domain.Models;
 
 namespace MMM_Bracket.API.Domain.Repositories
 {
-  public interface IAnimalsRepository
+  public interface IAnimalRepository
   {
-    Task<IEnumerable<Animals>> ListAsync();
+    Task<IEnumerable<Animal>> ListAsync();
   }
 }

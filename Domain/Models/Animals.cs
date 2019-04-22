@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace MMM_Bracket.API.Domain.Models
 {
-  public partial class Animals
+  public partial class Animal
   {
-    public Animals()
+    public Animal()
     {
-      Participants = new HashSet<Participants>();
+      // Participants = new HashSet<Participants>();
     }
 
     public int Id { get; set; }
@@ -16,6 +16,6 @@ namespace MMM_Bracket.API.Domain.Models
     public int InitialSeed { get; set; }
 
     public virtual Categories Category { get; set; }
-    public virtual ICollection<Participants> Participants { get; set; }
+    // public virtual ICollection<Participants> Participants { get; set; }
   }
 }

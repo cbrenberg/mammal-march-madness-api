@@ -6,16 +6,16 @@ using MMM_Bracket.API.Domain.Services;
 
 namespace MMM_Bracket.API.Services
 {
-  public class AnimalsService : IAnimalsService
+  public class AnimalService : IAnimalService
   {
 
-    private readonly IAnimalsRepository _animalsRepository;
+    private readonly IAnimalRepository _animalsRepository;
 
-    public AnimalsService(IAnimalsRepository animalsRepository)
+    public AnimalService(IAnimalRepository animalsRepository)
     {
       this._animalsRepository = animalsRepository;
     }
-    public async Task<IEnumerable<Animals>> ListAsync()
+    public async Task<IEnumerable<Animal>> ListAsync()
     {
       return await _animalsRepository.ListAsync();
     }

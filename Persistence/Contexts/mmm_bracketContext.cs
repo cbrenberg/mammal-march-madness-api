@@ -20,7 +20,7 @@ namespace MMM_Bracket.API.Persistence.Contexts
       _databaseSecrets = databaseSecrets.Value ?? throw new ArgumentException(nameof(databaseSecrets));
     }
 
-    public virtual DbSet<Animals> Animals { get; set; }
+    public virtual DbSet<Animal> Animals { get; set; }
     public virtual DbSet<Battles> Battles { get; set; }
     public virtual DbSet<BracketPicks> BracketPicks { get; set; }
     public virtual DbSet<Categories> Categories { get; set; }
@@ -39,7 +39,7 @@ namespace MMM_Bracket.API.Persistence.Contexts
     {
       modelBuilder.HasAnnotation("ProductVersion", "2.2.0-rtm-35687");
 
-      modelBuilder.Entity<Animals>(entity =>
+      modelBuilder.Entity<Animal>(entity =>
       {
         entity.Property(e => e.Id).HasColumnName("id");
 
@@ -121,11 +121,11 @@ namespace MMM_Bracket.API.Persistence.Contexts
 
         entity.Property(e => e.IsWinner).HasColumnName("is_winner");
 
-        entity.HasOne(d => d.Animal)
-                  .WithMany(p => p.Participants)
-                  .HasForeignKey(d => d.AnimalId)
-                  .OnDelete(DeleteBehavior.ClientSetNull)
-                  .HasConstraintName("Participants_fk0");
+        // entity.HasOne(d => d.Animal)
+        //           .WithMany(p => p.Participants)
+        //           .HasForeignKey(d => d.AnimalId)
+        //           .OnDelete(DeleteBehavior.ClientSetNull)
+        //           .HasConstraintName("Participants_fk0");
 
         entity.HasOne(d => d.Battle)
                   .WithMany(p => p.Participants)
