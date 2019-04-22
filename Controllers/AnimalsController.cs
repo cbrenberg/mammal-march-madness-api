@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MMM_Bracket.API.Domain.Services;
 using MMM_Bracket.API.Domain.Models;
+using MMM_Bracket.API.Resources;
 
 namespace MMM_Bracket.API.Controllers
 {
@@ -13,20 +15,23 @@ namespace MMM_Bracket.API.Controllers
   public class AnimalsController : ControllerBase
   {
     private readonly IAnimalService _animalService;
+    private readonly IMapper _mapper;
 
-    public AnimalsController(IAnimalService animalService)
+    public AnimalsController(IAnimalService animalService, IMapper mapper)
     {
       _animalService = animalService;
+      _mapper = mapper;
     }
 
 
     // GET api/animals
     [HttpGet]
-    public async Task<IEnumerable<Animal>> GetAllAsync()
+    public async Task<IEnumerable<AnimalResource>> GetAllAsync()
     {
       var animals = await _animalService.ListAsync();
+      var resources = _mapper.Map<IEnumerable<Animal>, IEnumerable<AnimalResource>>(animals);
 
-      return animals;
+      return resources;
     }
 
     // // GET api/animals/5

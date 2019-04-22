@@ -15,12 +15,12 @@ namespace MMM_Bracket.API.Persistence.Repositories
 
     public async Task<IEnumerable<Category>> ListAsync()
     {
-      return await _context.Categories.ToListAsync();
+      return await _context.Categories.Include("Animals").ToListAsync();
     }
 
     public async Task<Category> GetById(int id)
     {
-      return await _context.Categories.FindAsync(id);
+      return await _context.Categories.Include("Animals").FirstAsync(i => i.Id == id);
     }
   }
 }

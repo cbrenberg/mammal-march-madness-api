@@ -15,6 +15,7 @@ using MMM_Bracket.API.Domain.Services;
 using MMM_Bracket.API.Persistence.Contexts;
 using MMM_Bracket.API.Persistence.Repositories;
 using MMM_Bracket.API.Services;
+using AutoMapper;
 
 namespace MMM_Bracket.API
 {
@@ -32,6 +33,7 @@ namespace MMM_Bracket.API
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+      services.AddAutoMapper();
 
       services.AddEntityFrameworkNpgsql().AddDbContext<mmm_bracketContext>().BuildServiceProvider();
       services.Configure<DatabaseSecrets>(Configuration.GetSection("Database"));
