@@ -19,5 +19,10 @@ namespace MMM_Bracket.API.Services
     {
       return await _animalsRepository.ListAsync();
     }
+
+    public async Task<Animal> GetById(int id)
+    {
+      return await _animalsRepository.GetById(id);
+    }
   }
 }

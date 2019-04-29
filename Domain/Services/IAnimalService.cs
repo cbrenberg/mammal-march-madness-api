@@ -7,5 +7,7 @@ namespace MMM_Bracket.API.Domain.Services
   public interface IAnimalService
   {
     Task<IEnumerable<Animal>> ListAsync();
+
+    Task<Animal> GetById(int id);
   }
 }

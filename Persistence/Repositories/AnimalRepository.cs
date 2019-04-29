@@ -17,5 +17,10 @@ namespace MMM_Bracket.API.Persistence.Repositories
     {
       return await _context.Animals.ToListAsync();
     }
+
+    public async Task<Animal> GetById(int id)
+    {
+      return await _context.Animals.FindAsync(id);
+    }
   }
 }

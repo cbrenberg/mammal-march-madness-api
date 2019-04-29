@@ -34,12 +34,15 @@ namespace MMM_Bracket.API.Controllers
       return resources;
     }
 
-    // // GET api/animals/5
-    // [HttpGet("{id}")]
-    // public ActionResult<string> Get(int id)
-    // {
-    //   return "value";
-    // }
+    // GET api/animals/5
+    [HttpGet("{id}")]
+    public async Task<AnimalResource> Get(int id)
+    {
+      var animal = await _animalService.GetById(id);
+      var resource = _mapper.Map<Animal, AnimalResource>(animal);
+
+      return resource;
+    }
 
     // // POST api/animals
     // [HttpPost]
