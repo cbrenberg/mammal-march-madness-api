@@ -10,6 +10,7 @@ namespace MMM_Bracket.API.Mapping
     {
       CreateMap<Category, CategoryResource>();
       CreateMap<Animal, AnimalResource>();
+      CreateMap<Participant, ParticipantResource>();
     }
   }
 }

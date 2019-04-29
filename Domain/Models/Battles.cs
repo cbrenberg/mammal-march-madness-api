@@ -7,7 +7,7 @@ namespace MMM_Bracket.API.Domain.Models
   {
     public Battles()
     {
-      Participants = new HashSet<Participants>();
+      Participants = new HashSet<Participant>();
     }
 
     public int Id { get; set; }
@@ -15,6 +15,6 @@ namespace MMM_Bracket.API.Domain.Models
     public string Location { get; set; }
     public int RoundNumber { get; set; }
 
-    public virtual ICollection<Participants> Participants { get; set; }
+    public virtual ICollection<Participant> Participants { get; set; }
   }
 }

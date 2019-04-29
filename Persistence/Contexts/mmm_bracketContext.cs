@@ -24,7 +24,7 @@ namespace MMM_Bracket.API.Persistence.Contexts
     public virtual DbSet<Battles> Battles { get; set; }
     public virtual DbSet<BracketPicks> BracketPicks { get; set; }
     public virtual DbSet<Category> Categories { get; set; }
-    public virtual DbSet<Participants> Participants { get; set; }
+    public virtual DbSet<Participant> Participants { get; set; }
     public virtual DbSet<Users> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -111,7 +111,7 @@ namespace MMM_Bracket.API.Persistence.Contexts
         entity.Property(e => e.Year).HasColumnName("year");
       });
 
-      modelBuilder.Entity<Participants>(entity =>
+      modelBuilder.Entity<Participant>(entity =>
       {
         entity.Property(e => e.Id).HasColumnName("id");
 
@@ -121,11 +121,11 @@ namespace MMM_Bracket.API.Persistence.Contexts
 
         entity.Property(e => e.IsWinner).HasColumnName("is_winner");
 
-        // entity.HasOne(d => d.Animal)
-        //           .WithMany(p => p.Participants)
-        //           .HasForeignKey(d => d.AnimalId)
-        //           .OnDelete(DeleteBehavior.ClientSetNull)
-        //           .HasConstraintName("Participants_fk0");
+        entity.HasOne(d => d.Animal)
+                  .WithMany(p => p.Participants)
+                  .HasForeignKey(d => d.AnimalId)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("Participants_fk0");
 
         entity.HasOne(d => d.Battle)
                   .WithMany(p => p.Participants)
