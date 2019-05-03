@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace MMM_Bracket.API.Domain.Models
 {
-  public partial class Users
+  public partial class User
   {
-    public Users()
+    public User()
     {
       BracketPicks = new HashSet<BracketPicks>();
     }

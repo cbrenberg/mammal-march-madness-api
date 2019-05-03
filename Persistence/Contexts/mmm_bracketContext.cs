@@ -25,7 +25,7 @@ namespace MMM_Bracket.API.Persistence.Contexts
     public virtual DbSet<BracketPicks> BracketPicks { get; set; }
     public virtual DbSet<Category> Categories { get; set; }
     public virtual DbSet<Participant> Participants { get; set; }
-    public virtual DbSet<Users> Users { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -134,7 +134,7 @@ namespace MMM_Bracket.API.Persistence.Contexts
                   .HasConstraintName("Participants_fk1");
       });
 
-      modelBuilder.Entity<Users>(entity =>
+      modelBuilder.Entity<User>(entity =>
       {
         entity.Property(e => e.Id).HasColumnName("id");
 

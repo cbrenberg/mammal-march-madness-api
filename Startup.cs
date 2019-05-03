@@ -42,7 +42,7 @@ namespace MMM_Bracket.API
       //Configure user-secrets
       services.Configure<DatabaseSecrets>(Configuration.GetSection("Database"));
       services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
-      var token = Configuration.GetSection("tokenManagement").Get<JWTSettings>();
+      var token = Configuration.GetSection("JWTSettings").Get<JWTSettings>();
       var secret = Encoding.ASCII.GetBytes(token.SecretKey);
 
       //configure JWTBearer Authentication
@@ -77,6 +77,9 @@ namespace MMM_Bracket.API
 
       services.AddScoped<IParticipantRepository, ParticipantRepository>();
       services.AddScoped<IParticipantService, ParticipantService>();
+
+      services.AddScoped<IAuthenticationService, TokenAuthenticationService>();
+      services.AddScoped<IUserManagementService, UserManagementService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

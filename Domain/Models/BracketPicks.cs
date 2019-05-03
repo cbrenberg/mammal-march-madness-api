@@ -9,7 +9,7 @@ namespace MMM_Bracket.API.Domain.Models
     public int WinnerId { get; set; }
     public int Id { get; set; }
 
-    public virtual Users User { get; set; }
+    public virtual User User { get; set; }
     public virtual Participant Winner { get; set; }
   }
 }
