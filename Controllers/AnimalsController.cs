@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using MMM_Bracket.API.Domain.Services;
 using MMM_Bracket.API.Domain.Models;
 using MMM_Bracket.API.Resources;
 
 namespace MMM_Bracket.API.Controllers
 {
+  [Authorize]
   [Route("api/[controller]")]
   [ApiController]
   public class AnimalsController : ControllerBase
@@ -22,7 +24,6 @@ namespace MMM_Bracket.API.Controllers
       _animalService = animalService;
       _mapper = mapper;
     }
-
 
     // GET api/animals
     [HttpGet]

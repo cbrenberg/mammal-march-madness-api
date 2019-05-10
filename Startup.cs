@@ -39,13 +39,25 @@ namespace MMM_Bracket.API
     {
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-      //Configure user-secrets
-      services.Configure<DatabaseSecrets>(Configuration.GetSection("Database"));
-      services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
-      var token = Configuration.GetSection("JWTSettings").Get<JWTSettings>();
-      var secret = Encoding.ASCII.GetBytes(token.SecretKey);
+      services.AddAutoMapper();
+
+      services.AddEntityFrameworkNpgsql().AddDbContext<mmm_bracketContext>().BuildServiceProvider();
+
+      services.AddScoped<IAnimalRepository, AnimalRepository>();
+      services.AddScoped<IAnimalService, AnimalService>();
+
+      services.AddScoped<ICategoryRepository, CategoryRepository>();
+      services.AddScoped<ICategoryService, CategoryService>();
+
+      services.AddScoped<IParticipantRepository, ParticipantRepository>();
+      services.AddScoped<IParticipantService, ParticipantService>();
+
+      services.AddScoped<IAuthenticationService, TokenAuthenticationService>();
+      services.AddScoped<IUserManagementService, UserManagementService>();
 
       //configure JWTBearer Authentication
+      var token = Configuration.GetSection("JWTSettings").Get<JWTSettings>();
+      var secret = Encoding.ASCII.GetBytes(token.SecretKey);
       services.AddAuthentication(x =>
       {
         x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -65,21 +77,9 @@ namespace MMM_Bracket.API
         };
       });
 
-      services.AddAutoMapper();
-
-      services.AddEntityFrameworkNpgsql().AddDbContext<mmm_bracketContext>().BuildServiceProvider();
-
-      services.AddScoped<IAnimalRepository, AnimalRepository>();
-      services.AddScoped<IAnimalService, AnimalService>();
-
-      services.AddScoped<ICategoryRepository, CategoryRepository>();
-      services.AddScoped<ICategoryService, CategoryService>();
-
-      services.AddScoped<IParticipantRepository, ParticipantRepository>();
-      services.AddScoped<IParticipantService, ParticipantService>();
-
-      services.AddScoped<IAuthenticationService, TokenAuthenticationService>();
-      services.AddScoped<IUserManagementService, UserManagementService>();
+      //Map user-secrets to POCO classes
+      services.Configure<DatabaseSecrets>(Configuration.GetSection("Database"));
+      services.Configure<JWTSettings>(Configuration.GetSection("JWTSettings"));
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
