@@ -10,22 +10,32 @@ using System.Security.Cryptography;
 
 namespace MMM_Bracket.API.Services
 {
-  public class TokenAuthenticationService : IAuthenticationService
+  public class TokenAuthenticationService : ITokenAuthenticationService
   {
-    private readonly IUserManagementService _userManagementService;
+    private readonly IUserService _userService;
     private readonly JWTSettings _jwtSettings;
 
-    public TokenAuthenticationService(IUserManagementService service, IOptions<JWTSettings> jwtSettings)
+    public TokenAuthenticationService(IUserService userService, IOptions<JWTSettings> jwtSettings)
     {
-      _userManagementService = service;
+      _userService = userService;
       _jwtSettings = jwtSettings.Value;
     }
-    public bool IsAuthenticated(TokenRequestResource request, out string token)
+    public bool IsValidToken(TokenRequestResource request, out string token)
     {
-
       token = string.Empty;
-      if (!_userManagementService.IsValidUser(request.Username, request.Password)) return false;
+      if (!_userService.IsValidUser(request.Username, request.Password))
+      {
+        return false;
+      }
+      else
+      {
+        token = createTokenFromRequestResource(request);
+        return true;
+      }
+    }
 
+    private string createTokenFromRequestResource(TokenRequestResource request)
+    {
       var claim = new[]
       {
         new Claim(ClaimTypes.Name, request.Username)
@@ -40,8 +50,9 @@ namespace MMM_Bracket.API.Services
           expires: DateTime.Now.AddMinutes(_jwtSettings.AccessExpiration),
           signingCredentials: credentials
       );
-      token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
-      return true;
+      string token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
+
+      return token;
     }
   }
 }

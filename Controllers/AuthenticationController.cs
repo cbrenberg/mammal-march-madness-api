@@ -9,35 +9,48 @@ using MMM_Bracket.API.Domain.Services;
 using MMM_Bracket.API.Domain.Models;
 using MMM_Bracket.API.Resources;
 
-
-
 [Route("api/[controller]")]
 [ApiController]
-public class AuthenticationController : ControllerBase
+public class AuthorizationController : ControllerBase
 {
-  private IAuthenticationService _authService;
+  private ITokenAuthenticationService _tokenAuthService;
+  private IMapper _mapper;
+  private IUserService _userService;
 
-  public AuthenticationController(IAuthenticationService authService)
+  public AuthorizationController(ITokenAuthenticationService tokenAuthService, IUserService userService, IMapper mapper)
   {
-    _authService = authService;
+    _tokenAuthService = tokenAuthService;
+    _mapper = mapper;
+    _userService = userService;
   }
 
   [AllowAnonymous]
   [HttpPost, Route("request")]
-  public ActionResult RequestToken([FromBody] TokenRequestResource request)
+  public async Task<JsonResult> RequestUserWithToken([FromBody] TokenRequestResource request)
   {
     if (!ModelState.IsValid)
     {
-      return BadRequest("Invalid Request");
+      return new JsonResult("Invalid Request");
     }
 
-    string token;
-    if (_authService.IsAuthenticated(request, out token))
+    string token = string.Empty;
+
+    if (_tokenAuthService.IsValidToken(request, out token))
     {
-      return Ok(token);
+      var authorizedUser = await getAuthorizedUser(request);
+      if (authorizedUser != null)
+      {
+        var userResource = _mapper.Map<User, UserResource>(authorizedUser);
+        userResource.Token = token;
+        return new JsonResult(userResource);
+      }
     }
 
-    return BadRequest("Invalid Request");
+    return new JsonResult("Invalid Credentials");
+  }
 
+  private async Task<User> getAuthorizedUser(TokenRequestResource request)
+  {
+    return await _userService.Authenticate(request.Username, request.Password);
   }
 }
