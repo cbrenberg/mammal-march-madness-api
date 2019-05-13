@@ -3,10 +3,9 @@ using MMM_Bracket.API.Domain.Models;
 
 namespace MMM_Bracket.API.Domain.Services
 {
-  public interface IUserManagementService
+  public interface IUserService
   {
-
-    //TODO implement User Management Service in conjunction with user management repository class and database user credentials
     bool IsValidUser(string username, string password);
+    Task<User> Authenticate(string username, string password);
   }
 }
