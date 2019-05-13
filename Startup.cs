@@ -52,8 +52,10 @@ namespace MMM_Bracket.API
       services.AddScoped<IParticipantRepository, ParticipantRepository>();
       services.AddScoped<IParticipantService, ParticipantService>();
 
-      services.AddScoped<IAuthenticationService, TokenAuthenticationService>();
-      services.AddScoped<IUserManagementService, UserManagementService>();
+      services.AddScoped<ITokenAuthenticationService, TokenAuthenticationService>();
+
+      services.AddScoped<IUserRepository, UserRepository>();
+      services.AddScoped<IUserService, UserService>();
 
       //configure JWTBearer Authentication
       var token = Configuration.GetSection("JWTSettings").Get<JWTSettings>();
