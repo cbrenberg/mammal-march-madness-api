@@ -26,7 +26,7 @@ public class AuthorizationController : ControllerBase
 
   [AllowAnonymous]
   [HttpPost, Route("request")]
-  public async Task<ActionResult> RequestUserWithToken([FromBody] TokenRequestResource request)//TODO rename tokenrequestresource to logincredentialsresource
+  public async Task<ActionResult> RequestTokenAtLogin([FromBody] TokenRequestResource request)//TODO rename tokenrequestresource to logincredentialsresource
   {
     if (!ModelState.IsValid)
     {

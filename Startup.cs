@@ -76,6 +76,20 @@ namespace MMM_Bracket.API
           ValidAudience = tokenSettings.Audience,
           ValidateIssuer = true,
           ValidateAudience = true,
+          ValidateLifetime = true,
+          RequireExpirationTime = false,
+          ClockSkew = TimeSpan.Zero
+        };
+        x.Events = new JwtBearerEvents
+        {
+          OnAuthenticationFailed = context =>
+            {
+              if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+              {
+                context.Response.Headers.Add("Token-Expired", "true");
+              }
+              return Task.CompletedTask;
+            }
         };
       });
 
