@@ -26,27 +26,23 @@ public class AuthorizationController : ControllerBase
 
   [AllowAnonymous]
   [HttpPost, Route("request")]
-  public async Task<JsonResult> RequestUserWithToken([FromBody] TokenRequestResource request)
+  public async Task<ActionResult> RequestUserWithToken([FromBody] TokenRequestResource request)//TODO rename tokenrequestresource to logincredentialsresource
   {
     if (!ModelState.IsValid)
     {
-      return new JsonResult("Invalid Request");
+      return BadRequest("Invalid Request");
     }
 
-    string token = string.Empty;
+    var authorizedUser = await getAuthorizedUser(request);
 
-    if (_tokenAuthService.IsValidToken(request, out token))
+    if (authorizedUser != null)
     {
-      var authorizedUser = await getAuthorizedUser(request);
-      if (authorizedUser != null)
-      {
-        var userResource = _mapper.Map<User, UserResource>(authorizedUser);
-        userResource.Token = token;
-        return new JsonResult(userResource);
-      }
+      var userResource = _mapper.Map<User, UserResource>(authorizedUser);
+      string token = _tokenAuthService.CreateTokenForValidUser(userResource);
+      return Ok(token);
     }
 
-    return new JsonResult("Invalid Credentials");
+    return Unauthorized("Invalid Credentials");
   }
 
   private async Task<User> getAuthorizedUser(TokenRequestResource request)

@@ -58,8 +58,8 @@ namespace MMM_Bracket.API
       services.AddScoped<IUserService, UserService>();
 
       //configure JWTBearer Authentication
-      var token = Configuration.GetSection("JWTSettings").Get<JWTSettings>();
-      var secret = Encoding.ASCII.GetBytes(token.SecretKey);
+      var tokenSettings = Configuration.GetSection("JWTSettings").Get<JWTSettings>();
+      var secret = Encoding.ASCII.GetBytes(tokenSettings.SecretKey);
       services.AddAuthentication(x =>
       {
         x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -71,11 +71,11 @@ namespace MMM_Bracket.API
         x.TokenValidationParameters = new TokenValidationParameters
         {
           ValidateIssuerSigningKey = true,
-          IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(token.SecretKey)),
-          ValidIssuer = token.Issuer,
-          ValidAudience = token.Audience,
-          ValidateIssuer = false,
-          ValidateAudience = false
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenSettings.SecretKey)),
+          ValidIssuer = tokenSettings.Issuer,
+          ValidAudience = tokenSettings.Audience,
+          ValidateIssuer = true,
+          ValidateAudience = true,
         };
       });
 

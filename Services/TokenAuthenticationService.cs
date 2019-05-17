@@ -1,4 +1,5 @@
 using MMM_Bracket.API.Domain.Services;
+using MMM_Bracket.API.Domain.Models;
 using MMM_Bracket.API.Resources;
 using Microsoft.Extensions.Options;
 using System;
@@ -12,33 +13,21 @@ namespace MMM_Bracket.API.Services
 {
   public class TokenAuthenticationService : ITokenAuthenticationService
   {
-    private readonly IUserService _userService;
     private readonly JWTSettings _jwtSettings;
 
-    public TokenAuthenticationService(IUserService userService, IOptions<JWTSettings> jwtSettings)
+    public TokenAuthenticationService(IOptions<JWTSettings> jwtSettings)// TODO rename to JWTTokenService
     {
-      _userService = userService;
       _jwtSettings = jwtSettings.Value;
     }
-    public bool IsValidToken(TokenRequestResource request, out string token)
-    {
-      token = string.Empty;
-      if (!_userService.IsValidUser(request.Username, request.Password))
-      {
-        return false;
-      }
-      else
-      {
-        token = createTokenFromRequestResource(request);
-        return true;
-      }
-    }
 
-    private string createTokenFromRequestResource(TokenRequestResource request)
+    public string CreateTokenForValidUser(UserResource authenticatedUser) //TODO change param to type User
     {
       var claim = new[]
       {
-        new Claim(ClaimTypes.Name, request.Username)
+        new Claim("Username", authenticatedUser.Username),
+        new Claim("FirstName", authenticatedUser.FirstName),
+        new Claim("IsAdmin", authenticatedUser.IsAdmin),
+        new Claim("Id", authenticatedUser.Id.ToString()) //TODO add public claims from user param
       };
       var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
       var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
