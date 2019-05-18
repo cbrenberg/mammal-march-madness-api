@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace MMM_Bracket.API
+namespace MMM_Bracket.API.Domain.Models
 {
   public class JWTSettings
   {

@@ -36,5 +36,10 @@ namespace MMM_Bracket.API.Persistence.Repositories
     {
       return await _context.Users.FindAsync(id);
     }
+
+    public async Task<User> GetByUsername(string username)
+    {
+      return await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+    }
   }
 }

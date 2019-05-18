@@ -4,6 +4,7 @@ using MMM_Bracket.API.Resources;
 using Microsoft.Extensions.Options;
 using System;
 using System.Text;
+using System.Collections.Generic;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -22,20 +23,27 @@ namespace MMM_Bracket.API.Services
 
     public string CreateTokenForValidUser(UserResource authenticatedUser) //TODO change param to type User
     {
-      var claim = new[]
+      Claim[] claims =
       {
         new Claim("Username", authenticatedUser.Username),
         new Claim("FirstName", authenticatedUser.FirstName),
         new Claim("IsAdmin", authenticatedUser.IsAdmin),
         new Claim("Id", authenticatedUser.Id.ToString()) //TODO add public claims from user param
       };
+
+      string token = GenerateToken(claims);
+      return token;
+    }
+
+    public string GenerateToken(IEnumerable<Claim> claims)
+    {
       var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
       var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
       var jwtToken = new JwtSecurityToken(
           _jwtSettings.Issuer,
           _jwtSettings.Audience,
-          claim,
+          claims,
           expires: DateTime.Now.AddMinutes(_jwtSettings.AccessExpiration),
           signingCredentials: credentials
       );

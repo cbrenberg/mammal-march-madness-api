@@ -16,7 +16,7 @@ namespace MMM_Bracket.API.Domain.Models
     public string Email { get; set; }
     public string FirstName { get; set; }
     public string IsAdmin { get; set; }
-
+    public string RefreshToken { get; set; }
     public virtual ICollection<BracketPicks> BracketPicks { get; set; }
   }
 }

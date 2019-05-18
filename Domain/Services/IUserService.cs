@@ -8,6 +8,8 @@ namespace MMM_Bracket.API.Domain.Services
     bool IsValidUser(string username, string password);
     Task<User> Authenticate(string username, string password);
 
+    Task<User> GetUserByUsername(string username);
+
     //TODO:
     //AddUser
     //PasswordHasher

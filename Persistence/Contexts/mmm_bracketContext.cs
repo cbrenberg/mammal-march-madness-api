@@ -148,7 +148,7 @@ namespace MMM_Bracket.API.Persistence.Contexts
 
         entity.Property(e => e.IsAdmin)
                   .IsRequired()
-                  .HasColumnName("isAdmin");
+                  .HasColumnName("is_admin");
 
         entity.Property(e => e.Password)
                   .IsRequired()
@@ -157,6 +157,9 @@ namespace MMM_Bracket.API.Persistence.Contexts
         entity.Property(e => e.Username)
                   .IsRequired()
                   .HasColumnName("username");
+
+        entity.Property(e => e.RefreshToken)
+                  .HasColumnName("refresh_token");
       });
 
       modelBuilder.HasSequence("bracket_picks_seq");

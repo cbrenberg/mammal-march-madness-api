@@ -21,8 +21,12 @@ public class UserService : IUserService
   }
   public async Task<User> Authenticate(string username, string password)
   {
-    //TODO validate user credentials from DB
     return await _userRepository.Authenticate(username, password);
+  }
+
+  public async Task<User> GetUserByUsername(string username)
+  {
+    return await _userRepository.GetByUsername(username);
   }
 
 

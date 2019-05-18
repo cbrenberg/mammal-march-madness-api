@@ -9,6 +9,7 @@ namespace MMM_Bracket.API.Domain.Repositories
     Task<User> Authenticate(string username, string password);
     Task<IEnumerable<User>> ListAsync();
     Task<User> GetById(int id);
+    Task<User> GetByUsername(string username);
 
     //TODO:
     // AddUser(User user);

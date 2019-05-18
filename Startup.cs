@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MMM_Bracket.API.Domain.Repositories;
 using MMM_Bracket.API.Domain.Services;
+using MMM_Bracket.API.Domain.Models;
 using MMM_Bracket.API.Persistence.Contexts;
 using MMM_Bracket.API.Persistence.Repositories;
 using MMM_Bracket.API.Services;
@@ -42,6 +43,8 @@ namespace MMM_Bracket.API
       services.AddAutoMapper();
 
       services.AddEntityFrameworkNpgsql().AddDbContext<mmm_bracketContext>().BuildServiceProvider();
+
+      services.AddSingleton<IConfiguration>(Configuration);
 
       services.AddScoped<IAnimalRepository, AnimalRepository>();
       services.AddScoped<IAnimalService, AnimalService>();
@@ -71,7 +74,7 @@ namespace MMM_Bracket.API
         x.TokenValidationParameters = new TokenValidationParameters
         {
           ValidateIssuerSigningKey = true,
-          IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenSettings.SecretKey)),
+          IssuerSigningKey = new SymmetricSecurityKey(secret),
           ValidIssuer = tokenSettings.Issuer,
           ValidAudience = tokenSettings.Audience,
           ValidateIssuer = true,
