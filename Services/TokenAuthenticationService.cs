@@ -21,7 +21,7 @@ namespace MMM_Bracket.API.Services
       _jwtSettings = jwtSettings.Value;
     }
 
-    public string CreateTokenForValidUser(UserResource authenticatedUser) //TODO change param to type User
+    public string CreateAccessTokenForValidUser(UserResource authenticatedUser) //TODO change param to type User
     {
       Claim[] claims =
       {
@@ -31,11 +31,11 @@ namespace MMM_Bracket.API.Services
         new Claim("Id", authenticatedUser.Id.ToString()) //TODO add public claims from user param
       };
 
-      string token = GenerateToken(claims);
+      string token = GenerateAccessTokenWithClaims(claims);
       return token;
     }
 
-    public string GenerateToken(IEnumerable<Claim> claims)
+    public string GenerateAccessTokenWithClaims(IEnumerable<Claim> claims)
     {
       var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
       var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -50,6 +50,13 @@ namespace MMM_Bracket.API.Services
       string token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
 
       return token;
+    }
+
+    public string GenerateRefreshToken()
+    {
+      var randomNumber = new byte[32];
+      RandomNumberGenerator.Create().GetBytes(randomNumber);
+      return Convert.ToBase64String(randomNumber);
     }
   }
 }

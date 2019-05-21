@@ -41,20 +41,22 @@ public class AuthorizationController : ControllerBase
       return BadRequest("Invalid Request");
     }
 
-    var authorizedUser = await getAuthorizedUserByUsernameAndPassword(request);
+    var authorizedUser = await getAuthorizedUserFromTokenRequest(request);
 
     if (authorizedUser != null)
     {
       //TODO create and save refresh token to DB
+      string refreshToken = _tokenAuthService.GenerateRefreshToken();
       var userResource = _mapper.Map<User, UserResource>(authorizedUser);
-      string token = _tokenAuthService.CreateTokenForValidUser(userResource);
-      return Ok(token);
+      string token = _tokenAuthService.CreateAccessTokenForValidUser(userResource);
+      object result = new { token = token, refreshToken = refreshToken };
+      return new ObjectResult(result);
     }
 
     return Unauthorized("Invalid Credentials");
   }
 
-  private async Task<User> getAuthorizedUserByUsernameAndPassword(TokenRequestResource request)
+  private async Task<User> getAuthorizedUserFromTokenRequest(TokenRequestResource request)
   {
     return await _userService.Authenticate(request.Username, request.Password);
   }
@@ -83,12 +85,12 @@ public class AuthorizationController : ControllerBase
       throw new SecurityTokenException("Invalid Refresh Token");
     }
 
-    var newJwtToken = _tokenAuthService.GenerateToken(principal.Claims);
+    var newJwtToken = _tokenAuthService.GenerateAccessTokenWithClaims(principal.Claims);
 
-    //TODO: write generateRefreshToken functionality
+    string newRefreshToken = _tokenAuthService.GenerateRefreshToken();
     //TODO: DELETE and SAVE refresh token to DB
-    //TODO: return JSON with new access and refresh tokens to client
-    return Ok(newJwtToken);
+    var result = new { token = newJwtToken, refreshToken = newRefreshToken };
+    return new ObjectResult(result);
   }
 
   private ClaimsPrincipal ValidateAndGetPrincipalFromExpiredToken(string token)
