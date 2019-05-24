@@ -52,7 +52,7 @@ public class AuthorizationController : ControllerBase
     if (authorizedUser != null)
     {
       string refreshToken = _tokenAuthService.GenerateRefreshToken();
-      //TODO save refresh token to DB
+      await _userService.SaveRefreshToken(authorizedUser.Id, refreshToken);
 
       var userResource = _mapper.Map<User, UserResource>(authorizedUser);
       string token = _tokenAuthService.CreateAccessTokenForValidUser(userResource);
