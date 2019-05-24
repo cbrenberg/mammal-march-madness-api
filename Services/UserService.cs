@@ -23,7 +23,10 @@ public class UserService : IUserService
   {
     return await _userRepository.Authenticate(username, password);
   }
-
+  public async Task<User> GetUserById(int id)
+  {
+    return await _userRepository.GetById(id);
+  }
   public async Task<User> GetUserByUsername(string username)
   {
     return await _userRepository.GetByUsername(username);
