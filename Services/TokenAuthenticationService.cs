@@ -23,19 +23,19 @@ namespace MMM_Bracket.API.Services
 
     public string CreateAccessTokenForValidUser(UserResource authenticatedUser) //TODO change param to type User
     {
-      Claim[] claims =
+      Claim[] publicClaims =
       {
+        new Claim("Id", authenticatedUser.Id.ToString()),
         new Claim("Username", authenticatedUser.Username),
         new Claim("FirstName", authenticatedUser.FirstName),
-        new Claim("IsAdmin", authenticatedUser.IsAdmin),
-        new Claim("Id", authenticatedUser.Id.ToString()) //TODO add public claims from user param
+        new Claim("IsAdmin", authenticatedUser.IsAdmin)
       };
 
-      string token = GenerateAccessTokenWithClaims(claims);
+      string token = GenerateAccessTokenWithClaims(publicClaims);
       return token;
     }
 
-    public string GenerateAccessTokenWithClaims(IEnumerable<Claim> claims)
+    public string GenerateAccessTokenWithClaims(IEnumerable<Claim> publicClaims)
     {
       var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
       var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -43,7 +43,7 @@ namespace MMM_Bracket.API.Services
       var jwtToken = new JwtSecurityToken(
           _jwtSettings.Issuer,
           _jwtSettings.Audience,
-          claims,
+          publicClaims,
           expires: DateTime.Now.AddMinutes(_jwtSettings.AccessExpiration),
           signingCredentials: credentials
       );

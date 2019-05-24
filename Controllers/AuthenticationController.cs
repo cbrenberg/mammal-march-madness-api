@@ -26,6 +26,8 @@ public class AuthorizationController : ControllerBase
   private IUserService _userService;
   private IConfiguration _config;
 
+  private JwtSecurityTokenHandler _tokenHandler = new JwtSecurityTokenHandler();
+
   public AuthorizationController(ITokenAuthenticationService tokenAuthService, IUserService userService, IMapper mapper, IConfiguration config)
   {
     _tokenAuthService = tokenAuthService;
@@ -79,9 +81,9 @@ public class AuthorizationController : ControllerBase
     string expiredTokenFromClient = tokenParams.AccessToken;
     string refreshTokenFromClient = tokenParams.RefreshToken;
 
-    ClaimsPrincipal principal = ValidateAndGetPrincipalFromExpiredToken(expiredTokenFromClient);
-    string username = principal.Claims.First(x => x.Type == "Username").Value.ToString();
-
+    ClaimsPrincipal principal = GetValidatedClaimsPrincipalFromExpiredToken(expiredTokenFromClient);
+    // string username = principal.Claims.First(x => x.Type == "Username").Value.ToString();
+    string username = principal.FindFirst("Username").Value.ToString();
     string refreshTokenFromDatabase = await getStoredRefreshTokenForUser(username);
 
     if (refreshTokenFromClient != refreshTokenFromDatabase)
@@ -89,7 +91,9 @@ public class AuthorizationController : ControllerBase
       throw new SecurityTokenException("Invalid Refresh Token");
     }
 
-    var newJwtToken = _tokenAuthService.GenerateAccessTokenWithClaims(principal.Claims);
+    var publicClaims = extractPublicClaims(principal);
+
+    string newJwtToken = _tokenAuthService.GenerateAccessTokenWithClaims(publicClaims);
 
     string newRefreshToken = _tokenAuthService.GenerateRefreshToken();
     //TODO: DELETE and SAVE new refresh token to DB
@@ -97,7 +101,7 @@ public class AuthorizationController : ControllerBase
     return new ObjectResult(result);
   }
 
-  private ClaimsPrincipal ValidateAndGetPrincipalFromExpiredToken(string token)
+  private ClaimsPrincipal GetValidatedClaimsPrincipalFromExpiredToken(string token)
   {
     var tokenSettings = _config.GetSection("JWTSettings").Get<JWTSettings>();
     var secret = Encoding.ASCII.GetBytes(tokenSettings.SecretKey);
@@ -112,12 +116,8 @@ public class AuthorizationController : ControllerBase
       ValidateLifetime = false,
     };
 
-    //TODO: fix bug that is adding duplicate "aud" claims somewhere in the ValidateToken method
-    //        maybe read the token and compare manually or validate in some other way,
-    //        since token is not used for anything except checking its existence and its security algorithm?
-    var tokenHandler = new JwtSecurityTokenHandler();
     SecurityToken securityToken;
-    var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+    var principal = new JwtSecurityTokenHandler().ValidateToken(token, tokenValidationParameters, out securityToken);
     var jwtSecurityToken = securityToken as JwtSecurityToken;
     if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
     {
@@ -131,5 +131,16 @@ public class AuthorizationController : ControllerBase
     User user = await _userService.GetUserByUsername(username);
     string storedRefreshToken = user.RefreshToken;
     return storedRefreshToken;
+  }
+
+  private IEnumerable<Claim> extractPublicClaims(ClaimsPrincipal principal)
+  {
+    Claim[] publicClaims = new Claim[4];
+    publicClaims[0] = principal.FindFirst("Id");
+    publicClaims[1] = principal.FindFirst("Username");
+    publicClaims[2] = principal.FindFirst("FirstName");
+    publicClaims[3] = principal.FindFirst("IsAdmin");
+
+    return publicClaims;
   }
 }
