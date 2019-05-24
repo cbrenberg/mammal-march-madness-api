@@ -31,6 +31,9 @@ public class UserService : IUserService
   {
     return await _userRepository.GetByUsername(username);
   }
-
+  public async Task<User> SaveRefreshToken(int id, string newRefreshToken)
+  {
+    return await _userRepository.SaveRefreshToken(id, newRefreshToken);
+  }
 
 }

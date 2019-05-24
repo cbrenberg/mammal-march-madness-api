@@ -9,6 +9,7 @@ namespace MMM_Bracket.API.Domain.Services
     Task<User> Authenticate(string username, string password);
     Task<User> GetUserById(int id);
     Task<User> GetUserByUsername(string username);
+    Task<User> SaveRefreshToken(int id, string newRefreshToken);
     // Task<User> UpdateUser(string id);
 
   }

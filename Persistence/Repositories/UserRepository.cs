@@ -41,5 +41,20 @@ namespace MMM_Bracket.API.Persistence.Repositories
     {
       return await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
     }
+
+    public async Task<User> SaveRefreshToken(int id, string newRefreshToken)
+    {
+      try
+      {
+        User userToEdit = await _context.Users.FindAsync(id);
+        userToEdit.RefreshToken = newRefreshToken;
+        await _context.SaveChangesAsync();
+        return userToEdit;
+      }
+      catch (DbUpdateException)
+      {
+        throw;
+      }
+    }
   }
 }

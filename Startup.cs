@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -45,6 +46,7 @@ namespace MMM_Bracket.API
       services.AddEntityFrameworkNpgsql().AddDbContext<mmm_bracketContext>().BuildServiceProvider();
 
       services.AddSingleton<IConfiguration>(Configuration);
+      services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
       services.AddScoped<IAnimalRepository, AnimalRepository>();
       services.AddScoped<IAnimalService, AnimalService>();

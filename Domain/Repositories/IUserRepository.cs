@@ -10,7 +10,7 @@ namespace MMM_Bracket.API.Domain.Repositories
     Task<IEnumerable<User>> ListAsync();
     Task<User> GetById(int id);
     Task<User> GetByUsername(string username);
-
+    Task<User> SaveRefreshToken(int id, string newRefreshToken);
     //TODO:
     // AddUser(User user);
   }

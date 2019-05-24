@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -82,8 +84,7 @@ public class AuthorizationController : ControllerBase
     string refreshTokenFromClient = tokenParams.RefreshToken;
 
     ClaimsPrincipal principal = GetValidatedClaimsPrincipalFromExpiredToken(expiredTokenFromClient);
-    // string username = principal.Claims.First(x => x.Type == "Username").Value.ToString();
-    string username = principal.FindFirst("Username").Value.ToString();
+    string username = principal.FindFirstValue("Username");
     string refreshTokenFromDatabase = await getStoredRefreshTokenForUser(username);
 
     if (refreshTokenFromClient != refreshTokenFromDatabase)
@@ -95,10 +96,17 @@ public class AuthorizationController : ControllerBase
 
     string newJwtToken = _tokenAuthService.GenerateAccessTokenWithClaims(publicClaims);
 
+    int id = Convert.ToInt32(principal.FindFirstValue("Id"));
     string newRefreshToken = _tokenAuthService.GenerateRefreshToken();
-    //TODO: DELETE and SAVE new refresh token to DB
-    var result = new { accessToken = newJwtToken, refreshToken = newRefreshToken };
-    return new ObjectResult(result);
+
+    var savedUserObject = await _userService.SaveRefreshToken(id, newRefreshToken);
+
+    if (savedUserObject != null)
+    {
+      var result = new { accessToken = newJwtToken, refreshToken = newRefreshToken };
+      return new ObjectResult(result);
+    }
+    return StatusCode(500, "Unable to issue authentication refresh token");
   }
 
   private ClaimsPrincipal GetValidatedClaimsPrincipalFromExpiredToken(string token)
