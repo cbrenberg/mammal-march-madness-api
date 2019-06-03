@@ -1,14 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Claims;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -17,7 +12,6 @@ using Newtonsoft.Json;
 using MMM_Bracket.API.Domain.Services;
 using MMM_Bracket.API.Domain.Models.Configuration;
 using MMM_Bracket.API.Resources;
-using JWT;
 
 namespace MMM_Bracket.API.Controllers
 {
@@ -25,11 +19,11 @@ namespace MMM_Bracket.API.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private IJWTTokenService _tokenAuthService;
-        private IUserService _userService;
-        private IConfiguration _config;
+        private readonly IJWTTokenService _tokenAuthService;
+        private readonly IUserService _userService;
+        private readonly IConfiguration _config;
 
-        private JwtSecurityTokenHandler _tokenHandler = new JwtSecurityTokenHandler();
+        private readonly JwtSecurityTokenHandler _tokenHandler = new JwtSecurityTokenHandler();
 
         public AuthenticationController(IJWTTokenService tokenAuthService, IUserService userService, IConfiguration config)
         {
@@ -47,7 +41,7 @@ namespace MMM_Bracket.API.Controllers
                 return BadRequest("Invalid Request");
             }
 
-            UserResource authorizedUser = await getAuthorizedUserFromTokenRequest(request);
+            UserResource authorizedUser = await GetAuthorizedUserFromTokenRequest(request);
 
             if (authorizedUser != null)
             {
@@ -62,7 +56,7 @@ namespace MMM_Bracket.API.Controllers
             return Unauthorized("Invalid Credentials");
         }
 
-        private async Task<UserResource> getAuthorizedUserFromTokenRequest(LoginCredentialsResource request)
+        private async Task<UserResource> GetAuthorizedUserFromTokenRequest(LoginCredentialsResource request)
         {
             return await _userService.Authenticate(request.Username, request.Password);
         }
@@ -79,9 +73,9 @@ namespace MMM_Bracket.API.Controllers
         [HttpPost, Route("refresh")]
         public async Task<ActionResult> RequestRefreshToken([FromBody] RefreshTokenRequestParams tokenParams)
         {
-            UserResource userWithNewRefreshToken = null;
-            string newRefreshToken = "";
-            string newJwtToken = "";
+            UserResource userWithNewRefreshToken;
+            string newRefreshToken;
+            string newJwtToken;
 
             try
             {
@@ -95,14 +89,14 @@ namespace MMM_Bracket.API.Controllers
 
                 ClaimsPrincipal principal = GetValidatedClaimsPrincipalFromExpiredToken(expiredTokenFromClient);
                 string username = principal.FindFirstValue("Username");
-                string refreshTokenFromDatabase = await getStoredRefreshTokenForUser(username);
+                string refreshTokenFromDatabase = await GetStoredRefreshTokenForUser(username);
 
                 if (refreshTokenFromClient != refreshTokenFromDatabase)
                 {
                     throw new SecurityTokenValidationException("Invalid Refresh Token");
                 }
 
-                IEnumerable<Claim> publicClaims = extractPublicClaims(principal);
+                IEnumerable<Claim> publicClaims = ExtractPublicClaims(principal);
 
                 newJwtToken = _tokenAuthService.GenerateAccessTokenWithClaims(publicClaims);
 
@@ -114,16 +108,11 @@ namespace MMM_Bracket.API.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine("Unable to issue refresh token: ", e);
+                return StatusCode(401, $"Unable to issue refresh token: {e.Message}");
             }
 
-            if (userWithNewRefreshToken != null)
-            {
-                var result = new { accessToken = newJwtToken, refreshToken = newRefreshToken };
-                return new ObjectResult(result);
-            }
-                
-            return StatusCode(500, "Unable to issue refresh token");
+            var result = new { accessToken = newJwtToken, refreshToken = newRefreshToken };
+            return new ObjectResult(result);
         }
 
         private ClaimsPrincipal GetValidatedClaimsPrincipalFromExpiredToken(string token)
@@ -150,14 +139,14 @@ namespace MMM_Bracket.API.Controllers
             return principal;
         }
 
-        private async Task<string> getStoredRefreshTokenForUser(string username)
+        private async Task<string> GetStoredRefreshTokenForUser(string username)
         {
             UserResource user = await _userService.GetUserByUsername(username);
             string storedRefreshToken = user.RefreshToken;
             return storedRefreshToken;
         }
 
-        private IEnumerable<Claim> extractPublicClaims(ClaimsPrincipal principal)
+        private IEnumerable<Claim> ExtractPublicClaims(ClaimsPrincipal principal)
         {
             Claim[] publicClaims = new Claim[4];
             publicClaims[0] = principal.FindFirst("Id");

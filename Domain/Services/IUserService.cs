@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using MMM_Bracket.API.Domain.Models;
 using MMM_Bracket.API.Resources;
 
 namespace MMM_Bracket.API.Domain.Services
@@ -10,7 +11,6 @@ namespace MMM_Bracket.API.Domain.Services
     Task<UserResource> GetUserById(int id);
     Task<UserResource> GetUserByUsername(string username);
     Task<UserResource> SaveRefreshToken(int id, string newRefreshToken);
-    // Task<User> UpdateUser(string id);
-
+    Task<bool> RegisterNewUser(User user);
   }
 }

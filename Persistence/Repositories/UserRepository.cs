@@ -57,5 +57,12 @@ namespace MMM_Bracket.API.Persistence.Repositories
         throw new Exception("Error: Unable to save new refresh token", e);
       }
     }
-  }
+
+        public async Task<bool> AddUser(User user)
+        {
+            _context.Users.Attach(user);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+    }
 }

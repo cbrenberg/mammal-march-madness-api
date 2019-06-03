@@ -48,5 +48,10 @@ namespace MMM_Bracket.API.Services
             return _mapper.Map<User, UserResource>(user);
         }
 
+        public async Task<bool> RegisterNewUser(User user)
+        {
+            bool wasRegistrationSuccessful = await _userRepository.AddUser(user);
+            return wasRegistrationSuccessful;
+        }
     }
 }
