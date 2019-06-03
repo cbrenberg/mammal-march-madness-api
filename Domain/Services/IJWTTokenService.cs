@@ -10,5 +10,7 @@ namespace MMM_Bracket.API.Domain.Services
 
         string GenerateAccessTokenWithClaims(IEnumerable<Claim> claims);
         string GenerateRefreshToken();
+
+        bool IsRefreshTokenExpired(string refreshToken);
     }
 }

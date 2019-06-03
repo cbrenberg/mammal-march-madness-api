@@ -88,13 +88,18 @@ namespace MMM_Bracket.API.Controllers
                 string expiredTokenFromClient = tokenParams.AccessToken;
                 string refreshTokenFromClient = tokenParams.RefreshToken;
 
+                if (_tokenAuthService.IsRefreshTokenExpired(refreshTokenFromClient))
+                {
+                    throw new SecurityTokenExpiredException("Refresh Token Is Expired");
+                }
+
                 ClaimsPrincipal principal = GetValidatedClaimsPrincipalFromExpiredToken(expiredTokenFromClient);
                 string username = principal.FindFirstValue("Username");
                 string refreshTokenFromDatabase = await getStoredRefreshTokenForUser(username);
 
                 if (refreshTokenFromClient != refreshTokenFromDatabase)
                 {
-                    throw new SecurityTokenException("Invalid Refresh Token");
+                    throw new SecurityTokenValidationException("Invalid Refresh Token");
                 }
 
                 IEnumerable<Claim> publicClaims = extractPublicClaims(principal);
@@ -109,8 +114,7 @@ namespace MMM_Bracket.API.Controllers
             }
             catch (Exception e)
             {
-                Console.Write("Unable to issue refresh token: ", e);
-                
+                Console.WriteLine("Unable to issue refresh token: ", e);
             }
 
             if (userWithNewRefreshToken != null)
@@ -141,7 +145,7 @@ namespace MMM_Bracket.API.Controllers
             JwtSecurityToken jwtSecurityToken = (JwtSecurityToken)securityToken;
             if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             {
-                throw new SecurityTokenException("Invalid token.");
+                throw new SecurityTokenDecryptionFailedException("Invalid token.");
             }
             return principal;
         }

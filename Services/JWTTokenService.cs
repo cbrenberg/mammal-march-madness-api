@@ -56,11 +56,21 @@ namespace MMM_Bracket.API.Services
         {
             var randomNumber = new byte[32];
             RandomNumberGenerator.Create().GetBytes(randomNumber);
-            //TODO: add refresh token expiration
             string refreshToken = Convert.ToBase64String(randomNumber);
             string refreshExpiration = DateTimeOffset.UtcNow.AddHours(2).ToUnixTimeMilliseconds().ToString();
 
             return String.Join("::", refreshToken, refreshExpiration);
+        }
+
+        public bool IsRefreshTokenExpired(string refreshToken)
+        {
+            long unixMilliseconds = long.Parse(refreshToken.Split("::")[1]);
+            DateTimeOffset refreshExpiration = DateTimeOffset.FromUnixTimeMilliseconds(unixMilliseconds);
+            if (refreshExpiration < DateTimeOffset.UtcNow)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
