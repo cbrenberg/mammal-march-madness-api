@@ -45,7 +45,7 @@ namespace MMM_Bracket.API
 
       services.AddEntityFrameworkNpgsql().AddDbContext<mmm_bracketContext>().BuildServiceProvider();
 
-      services.AddSingleton<IConfiguration>(Configuration);
+      services.AddSingleton(Configuration);
       services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
       services.AddScoped<IAnimalRepository, AnimalRepository>();
@@ -57,7 +57,7 @@ namespace MMM_Bracket.API
       services.AddScoped<IParticipantRepository, ParticipantRepository>();
       services.AddScoped<IParticipantService, ParticipantService>();
 
-      services.AddScoped<ITokenAuthenticationService, TokenAuthenticationService>();
+      services.AddScoped<IJWTTokenService, JWTTokenService>();
 
       services.AddScoped<IUserRepository, UserRepository>();
       services.AddScoped<IUserService, UserService>();

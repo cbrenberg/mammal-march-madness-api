@@ -23,19 +23,17 @@ namespace MMM_Bracket.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthorizationController : ControllerBase
+    public class AuthenticationController : ControllerBase
     {
-        private ITokenAuthenticationService _tokenAuthService;
-        private IMapper _mapper;
+        private IJWTTokenService _tokenAuthService;
         private IUserService _userService;
         private IConfiguration _config;
 
         private JwtSecurityTokenHandler _tokenHandler = new JwtSecurityTokenHandler();
 
-        public AuthorizationController(ITokenAuthenticationService tokenAuthService, IUserService userService, IMapper mapper, IConfiguration config)
+        public AuthenticationController(IJWTTokenService tokenAuthService, IUserService userService, IConfiguration config)
         {
             _tokenAuthService = tokenAuthService;
-            _mapper = mapper;
             _userService = userService;
             _config = config;
         }
@@ -81,33 +79,47 @@ namespace MMM_Bracket.API.Controllers
         [HttpPost, Route("refresh")]
         public async Task<ActionResult> RequestRefreshToken([FromBody] RefreshTokenRequestParams tokenParams)
         {
-            string expiredTokenFromClient = tokenParams.AccessToken;
-            string refreshTokenFromClient = tokenParams.RefreshToken;
+            UserResource userWithNewRefreshToken = null;
+            string newRefreshToken = "";
+            string newJwtToken = "";
 
-            ClaimsPrincipal principal = GetValidatedClaimsPrincipalFromExpiredToken(expiredTokenFromClient);
-            string username = principal.FindFirstValue("Username");
-            string refreshTokenFromDatabase = await getStoredRefreshTokenForUser(username);
-
-            if (refreshTokenFromClient != refreshTokenFromDatabase)
+            try
             {
-                throw new SecurityTokenException("Invalid Refresh Token");
+                string expiredTokenFromClient = tokenParams.AccessToken;
+                string refreshTokenFromClient = tokenParams.RefreshToken;
+
+                ClaimsPrincipal principal = GetValidatedClaimsPrincipalFromExpiredToken(expiredTokenFromClient);
+                string username = principal.FindFirstValue("Username");
+                string refreshTokenFromDatabase = await getStoredRefreshTokenForUser(username);
+
+                if (refreshTokenFromClient != refreshTokenFromDatabase)
+                {
+                    throw new SecurityTokenException("Invalid Refresh Token");
+                }
+
+                IEnumerable<Claim> publicClaims = extractPublicClaims(principal);
+
+                newJwtToken = _tokenAuthService.GenerateAccessTokenWithClaims(publicClaims);
+
+                int id = Convert.ToInt32(principal.FindFirstValue("Id"));
+                newRefreshToken = _tokenAuthService.GenerateRefreshToken();
+
+                userWithNewRefreshToken = await _userService.SaveRefreshToken(id, newRefreshToken);
+
+            }
+            catch (Exception e)
+            {
+                Console.Write("Unable to issue refresh token: ", e);
+                
             }
 
-            var publicClaims = extractPublicClaims(principal);
-
-            string newJwtToken = _tokenAuthService.GenerateAccessTokenWithClaims(publicClaims);
-
-            int id = Convert.ToInt32(principal.FindFirstValue("Id"));
-            string newRefreshToken = _tokenAuthService.GenerateRefreshToken();
-
-            var savedUserObject = await _userService.SaveRefreshToken(id, newRefreshToken);
-
-            if (savedUserObject != null)
+            if (userWithNewRefreshToken != null)
             {
                 var result = new { accessToken = newJwtToken, refreshToken = newRefreshToken };
                 return new ObjectResult(result);
             }
-            return StatusCode(500, "Unable to issue authentication refresh token");
+                
+            return StatusCode(500, "Unable to issue refresh token");
         }
 
         private ClaimsPrincipal GetValidatedClaimsPrincipalFromExpiredToken(string token)
@@ -125,9 +137,8 @@ namespace MMM_Bracket.API.Controllers
                 ValidateLifetime = false,
             };
 
-            SecurityToken securityToken;
-            var principal = _tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
-            var jwtSecurityToken = securityToken as JwtSecurityToken;
+            var principal = _tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+            JwtSecurityToken jwtSecurityToken = (JwtSecurityToken)securityToken;
             if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             {
                 throw new SecurityTokenException("Invalid token.");
