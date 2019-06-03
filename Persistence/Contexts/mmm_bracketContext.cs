@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Options;
 using MMM_Bracket.API.Domain.Models;
+using MMM_Bracket.API.Domain.Models.Configuration;
+
 
 namespace MMM_Bracket.API.Persistence.Contexts
 {
-  public partial class mmm_bracketContext : DbContext
+  public class mmm_bracketContext : DbContext
   {
 
     private readonly DatabaseSecrets _databaseSecrets;

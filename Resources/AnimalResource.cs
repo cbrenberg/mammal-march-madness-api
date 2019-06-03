@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace MMM_Bracket.API.Resources
 {
-  public partial class AnimalResource
+  public class AnimalResource
   {
     public int Id { get; set; }
     public int CategoryId { get; set; }

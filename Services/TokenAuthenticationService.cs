@@ -1,5 +1,6 @@
 using MMM_Bracket.API.Domain.Services;
 using MMM_Bracket.API.Domain.Models;
+using MMM_Bracket.API.Domain.Models.Configuration;
 using MMM_Bracket.API.Resources;
 using Microsoft.Extensions.Options;
 using System;
@@ -21,7 +22,7 @@ namespace MMM_Bracket.API.Services
       _jwtSettings = jwtSettings.Value;
     }
 
-    public string CreateAccessTokenForValidUser(UserResource authenticatedUser) //TODO change param to type User
+    public string CreateAccessTokenForValidUserResource(UserResource authenticatedUser) //TODO change param to type User
     {
       Claim[] publicClaims =
       {
@@ -56,6 +57,7 @@ namespace MMM_Bracket.API.Services
     {
       var randomNumber = new byte[32];
       RandomNumberGenerator.Create().GetBytes(randomNumber);
+      //TODO: add refresh token expiration
       return Convert.ToBase64String(randomNumber);
     }
   }

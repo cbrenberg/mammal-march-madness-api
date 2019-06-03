@@ -17,7 +17,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MMM_Bracket.API.Domain.Repositories;
 using MMM_Bracket.API.Domain.Services;
-using MMM_Bracket.API.Domain.Models;
+using MMM_Bracket.API.Domain.Models.Configuration;
 using MMM_Bracket.API.Persistence.Contexts;
 using MMM_Bracket.API.Persistence.Repositories;
 using MMM_Bracket.API.Services;

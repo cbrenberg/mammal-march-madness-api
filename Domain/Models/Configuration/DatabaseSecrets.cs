@@ -1,4 +1,8 @@
-public class DatabaseSecrets
+
+namespace MMM_Bracket.API.Domain.Models.Configuration
 {
-  public string ConnectionString { get; set; }
+    public class DatabaseSecrets
+    {
+        public string ConnectionString { get; set; }
+    }
 }

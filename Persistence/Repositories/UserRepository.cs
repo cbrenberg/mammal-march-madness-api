@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -22,8 +23,6 @@ namespace MMM_Bracket.API.Persistence.Repositories
         return null;
       }
 
-      user.Password = null;
-
       return user;
     }
 
@@ -46,14 +45,16 @@ namespace MMM_Bracket.API.Persistence.Repositories
     {
       try
       {
-        User userToEdit = await _context.Users.FindAsync(id);
+        User userToEdit = await GetById(id);
         userToEdit.RefreshToken = newRefreshToken;
+        _context.Users.Attach(userToEdit).Property(x => x.RefreshToken).IsModified = true;
+        
         await _context.SaveChangesAsync();
         return userToEdit;
       }
-      catch (DbUpdateException)
+      catch (DbUpdateException e)
       {
-        throw;
+        throw new Exception("Error: Unable to save new refresh token", e);
       }
     }
   }

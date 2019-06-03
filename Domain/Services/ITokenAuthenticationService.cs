@@ -7,7 +7,7 @@ namespace MMM_Bracket.API.Domain.Services
 {
   public interface ITokenAuthenticationService
   {
-    string CreateAccessTokenForValidUser(UserResource user);
+    string CreateAccessTokenForValidUserResource(UserResource user);
 
     string GenerateAccessTokenWithClaims(IEnumerable<Claim> claims);
     string GenerateRefreshToken();

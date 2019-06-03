@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using MMM_Bracket.API.Domain.Models;
 
 namespace MMM_Bracket.API.Resources
 {
