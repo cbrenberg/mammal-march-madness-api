@@ -29,10 +29,10 @@ namespace MMM_Bracket.API.Controllers
     [HttpGet]
     public async Task<IEnumerable<AnimalResource>> GetAllAsync()
     {
-      var animals = await _animalService.ListAsync();
-      var resources = _mapper.Map<IEnumerable<Animal>, IEnumerable<AnimalResource>>(animals);
-
-      return resources;
+        var animals = await _animalService.ListAsync();
+        var resources = _mapper.Map<IEnumerable<Animal>, IEnumerable<AnimalResource>>(animals);
+        
+        return resources;
     }
 
     // GET api/animals/5

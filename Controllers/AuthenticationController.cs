@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using MMM_Bracket.API.Domain.Services;
 using MMM_Bracket.API.Domain.Models.Configuration;
 using MMM_Bracket.API.Resources;
+using MMM_Bracket.API.Domain.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace MMM_Bracket.API.Controllers
 {
@@ -61,13 +62,6 @@ namespace MMM_Bracket.API.Controllers
             return await _userService.Authenticate(request.Username, request.Password);
         }
 
-        public class RefreshTokenRequestParams
-        {
-            [JsonProperty("accessToken")]
-            public string AccessToken { get; set; }
-            [JsonProperty("refreshToken")]
-            public string RefreshToken { get; set; }
-        }
 
         [AllowAnonymous]
         [HttpPost, Route("refresh")]
@@ -76,6 +70,8 @@ namespace MMM_Bracket.API.Controllers
             UserResource userWithNewRefreshToken;
             string newRefreshToken;
             string newJwtToken;
+
+
 
             try
             {
@@ -155,6 +151,29 @@ namespace MMM_Bracket.API.Controllers
             publicClaims[3] = principal.FindFirst("IsAdmin");
 
             return publicClaims;
+        }
+
+        [AllowAnonymous]
+        [HttpPost, Route("register")]
+        public async Task<ActionResult> RegisterNewUser([FromBody] RegistrationRequestResource request)
+        {
+
+            User newUser = new User();
+            newUser.Username = request.Username;
+            newUser.Password = request.Password;
+            newUser.Email = request.Email;
+            newUser.FirstName = request.FirstName;
+            try
+            {
+                bool success = await _userService.RegisterNewUser(newUser);
+                if (success == false) throw new ApplicationException("Failed during registration");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Could not register new user: {e.Message}");
+            }
+
+            return StatusCode(200, "Successfully registered. Proceed to login.");
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MMM_Bracket.API.Domain.Models
 {
-  public partial class User
+  public class User
   {
     public User()
     {

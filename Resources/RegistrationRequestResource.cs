@@ -16,5 +16,9 @@ namespace MMM_Bracket.API.Resources
         [Required]
         [JsonProperty("email")]
         public string Email { get; set; }
+
+        [Required]
+        [JsonProperty("firstName")]
+        public string FirstName { get; set; }
     }
 }

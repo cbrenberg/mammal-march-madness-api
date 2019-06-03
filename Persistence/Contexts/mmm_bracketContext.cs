@@ -148,8 +148,9 @@ namespace MMM_Bracket.API.Persistence.Contexts
                   .HasColumnName("first_name");
 
         entity.Property(e => e.IsAdmin)
-                  .IsRequired()
-                  .HasColumnName("is_admin");
+                .IsRequired()
+                .HasDefaultValue(false)
+                .HasColumnName("is_admin");
 
         entity.Property(e => e.Password)
                   .IsRequired()

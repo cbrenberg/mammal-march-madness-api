@@ -50,8 +50,17 @@ namespace MMM_Bracket.API.Services
 
         public async Task<bool> RegisterNewUser(User user)
         {
-            bool wasRegistrationSuccessful = await _userRepository.AddUser(user);
+            bool wasRegistrationSuccessful = false;
+
+            User existingUserWithSameUsername = await _userRepository.GetByUsername(user.Username);
+
+            if (existingUserWithSameUsername == null)
+            {
+                wasRegistrationSuccessful = await _userRepository.AddUser(user);
+            }
+
             return wasRegistrationSuccessful;
         }
+
     }
 }
