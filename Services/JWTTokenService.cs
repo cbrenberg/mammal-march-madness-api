@@ -44,7 +44,7 @@ namespace MMM_Bracket.API.Services
                 _jwtSettings.Issuer,
                 _jwtSettings.Audience,
                 publicClaims,
-                expires: DateTime.Now.AddMinutes(_jwtSettings.AccessExpiration),
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.AccessExpiration),
                 signingCredentials: credentials
             );
             string token = new JwtSecurityTokenHandler().WriteToken(jwtToken);
@@ -57,7 +57,10 @@ namespace MMM_Bracket.API.Services
             var randomNumber = new byte[32];
             RandomNumberGenerator.Create().GetBytes(randomNumber);
             //TODO: add refresh token expiration
-            return Convert.ToBase64String(randomNumber);
+            string refreshToken = Convert.ToBase64String(randomNumber);
+            string refreshExpiration = DateTimeOffset.UtcNow.AddHours(2).ToUnixTimeMilliseconds().ToString();
+
+            return String.Join("::", refreshToken, refreshExpiration);
         }
     }
 }
