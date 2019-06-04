@@ -16,7 +16,7 @@ namespace MMM_Bracket.API.Domain.Models
     public bool IsWinner { get; set; }
 
     public virtual Animal Animal { get; set; }
-    public virtual Battles Battle { get; set; }
+    public virtual Battle Battle { get; set; }
     public virtual ICollection<BracketPicks> BracketPicks { get; set; }
   }
 }
