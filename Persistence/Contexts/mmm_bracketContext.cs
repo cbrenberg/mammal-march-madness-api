@@ -145,6 +145,8 @@ namespace MMM_Bracket.API.Persistence.Contexts
                   .HasColumnName("email");
 
         entity.Property(e => e.FirstName)
+                  .IsRequired()
+                  .HasDefaultValue("Pardner")
                   .HasColumnName("first_name");
 
         entity.Property(e => e.IsAdmin)

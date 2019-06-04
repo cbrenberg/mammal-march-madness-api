@@ -4,7 +4,7 @@ using MMM_Bracket.API.Domain.Services;
 using MMM_Bracket.API.Domain.Repositories;
 using MMM_Bracket.API.Domain.Models;
 using MMM_Bracket.API.Resources;
-
+using System;
 
 namespace MMM_Bracket.API.Services
 {
@@ -54,11 +54,12 @@ namespace MMM_Bracket.API.Services
 
             User existingUserWithSameUsername = await _userRepository.GetByUsername(user.Username);
 
-            if (existingUserWithSameUsername == null)
+            if (existingUserWithSameUsername != null)
             {
-                wasRegistrationSuccessful = await _userRepository.AddUser(user);
+                throw new ApplicationException("Username already exists");
             }
 
+            wasRegistrationSuccessful = await _userRepository.AddUser(user);
             return wasRegistrationSuccessful;
         }
 

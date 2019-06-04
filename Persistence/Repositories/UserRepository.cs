@@ -11,7 +11,7 @@ namespace MMM_Bracket.API.Persistence.Repositories
 {
     public class UserRepository : BaseRepository, IUserRepository
     {
-        private PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
+        private readonly PasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
 
         public UserRepository(mmm_bracketContext context) : base(context)
         {
@@ -32,6 +32,7 @@ namespace MMM_Bracket.API.Persistence.Repositories
         private bool PasswordMatches(User user, string password)
         {
             PasswordVerificationResult result = _passwordHasher.VerifyHashedPassword(user, user.Password, password);
+
             if (result == PasswordVerificationResult.Failed )
             {
                 return false;
@@ -79,8 +80,9 @@ namespace MMM_Bracket.API.Persistence.Repositories
                 _context.Users.Attach(user);
                 await _context.SaveChangesAsync();
             } 
-            catch
+            catch (Exception e)
             {
+                Console.Write($"Unable to add user: {e}");
                 return false;
             }
 

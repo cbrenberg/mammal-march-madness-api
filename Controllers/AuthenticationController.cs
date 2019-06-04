@@ -158,11 +158,14 @@ namespace MMM_Bracket.API.Controllers
         public async Task<ActionResult> RegisterNewUser([FromBody] RegistrationRequestResource request)
         {
 
-            User newUser = new User();
-            newUser.Username = request.Username;
-            newUser.Password = request.Password;
-            newUser.Email = request.Email;
-            newUser.FirstName = request.FirstName;
+            User newUser = new User
+            {
+                Username = request.Username,
+                Password = request.Password,
+                Email = request.Email,
+                FirstName = request.FirstName
+            };
+
             try
             {
                 bool success = await _userService.RegisterNewUser(newUser);
