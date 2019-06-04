@@ -71,8 +71,6 @@ namespace MMM_Bracket.API.Controllers
             string newRefreshToken;
             string newJwtToken;
 
-
-
             try
             {
                 string expiredTokenFromClient = tokenParams.AccessToken;

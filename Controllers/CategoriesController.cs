@@ -26,9 +26,9 @@ namespace MMM_Bracket.API.Controllers
 
     // GET api/animals
     [HttpGet]
-    public async Task<IEnumerable<CategoryResource>> GetAllAsync()
+    public async Task<IEnumerable<CategoryResource>> GetAllAsync([FromQuery] int year)
     {
-      var categories = await _categoryService.ListAsync();
+      var categories = await _categoryService.GetAllCategoriesByYear(year);
       var resources = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryResource>>(categories);
 
       return resources;
@@ -38,7 +38,7 @@ namespace MMM_Bracket.API.Controllers
     [HttpGet("{id}")]
     public async Task<CategoryResource> Get(int id)
     {
-      var category = await _categoryService.GetById(id);
+      var category = await _categoryService.GetCategoryById(id);
       var resource = _mapper.Map<Category, CategoryResource>(category);
 
       return resource;

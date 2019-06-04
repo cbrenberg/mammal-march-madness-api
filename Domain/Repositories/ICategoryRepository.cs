@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MMM_Bracket.API.Domain.Models;
 
@@ -6,8 +7,10 @@ namespace MMM_Bracket.API.Domain.Repositories
 {
   public interface ICategoryRepository
   {
-    Task<IEnumerable<Category>> ListAsync();
+        IQueryable<Category> GetAllCategories();
 
-    Task<Category> GetById(int id);
+        Task<IEnumerable<Category>> GetAllCategoriesByYear(int year);
+
+        Task<Category> GetCategoryById(int id);
   }
 }

@@ -6,8 +6,8 @@ namespace MMM_Bracket.API.Domain.Services
 {
   public interface ICategoryService
   {
-    Task<IEnumerable<Category>> ListAsync();
+        Task<IEnumerable<Category>> GetAllCategoriesByYear(int year);
 
-    Task<Category> GetById(int id);
+    Task<Category> GetCategoryById(int id);
   }
 }

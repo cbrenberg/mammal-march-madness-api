@@ -13,16 +13,17 @@ namespace MMM_Bracket.API.Services
 
     public CategoryService(ICategoryRepository categoryRepository)
     {
-      this._categoryRepository = categoryRepository;
-    }
-    public async Task<IEnumerable<Category>> ListAsync()
-    {
-      return await _categoryRepository.ListAsync();
+      _categoryRepository = categoryRepository;
     }
 
-    public async Task<Category> GetById(int id)
+    public async Task<IEnumerable<Category>> GetAllCategoriesByYear(int year)
     {
-      return await _categoryRepository.GetById(id);
+      return await _categoryRepository.GetAllCategoriesByYear(year);
+    }
+
+    public async Task<Category> GetCategoryById(int id)
+    {
+      return await _categoryRepository.GetCategoryById(id);
     }
   }
 }
