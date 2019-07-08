@@ -33,9 +33,9 @@ namespace MMM_Bracket.API.Controllers
 
     // GET api/results/5
     [HttpGet("{id}")]
-    public async Task<BattleResource> Get(int id)
+    public async Task<BattleResource> GetBattleResultsById(int battleId)
     {
-      var battle = await _resultsService.GetById(id);
+      var battle = await _resultsService.GetByBattleId(battleId);
       var resource = _mapper.Map<Battle, BattleResource>(battle);
 
       return resource;

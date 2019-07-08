@@ -20,7 +20,7 @@ namespace MMM_Bracket.API.Persistence.Repositories
 
     public async Task<Battle> GetById(int id)
     {
-      return await _context.Battles.Include("Participants").FirstAsync(i => i.Id == id);
+      return await _context.Battles.Include(x => x.Participants).ThenInclude(x => x.Animal).FirstAsync(i => i.Id == id);
     }
   }
 }

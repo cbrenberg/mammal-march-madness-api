@@ -8,6 +8,6 @@ namespace MMM_Bracket.API.Domain.Services
   {
     Task<IEnumerable<Battle>> ListAsync();
 
-    Task<Battle> GetById(int id);
+    Task<Battle> GetByBattleId(int battleId);
   }
 }
