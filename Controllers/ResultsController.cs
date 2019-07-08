@@ -31,7 +31,7 @@ namespace MMM_Bracket.API.Controllers
       return resources;
     }
 
-    // GET api/results/5
+    // GET api/results/{id}
     [HttpGet("{id}")]
     public async Task<BattleResource> GetBattleResultsById(int battleId)
     {
@@ -39,6 +39,15 @@ namespace MMM_Bracket.API.Controllers
       var resource = _mapper.Map<Battle, BattleResource>(battle);
 
       return resource;
+    }
+
+    // GET api/results/official/{year}
+    [HttpGet("official/{year}")]
+    public async Task<IEnumerable<BattleResource>> GetOfficialResultsForYear(int year)
+    {
+        var officialResults = await _resultsService.ListAsync(year);
+        var resource = _mapper.Map<IEnumerable<Battle>, IEnumerable<BattleResource>>(officialResults);
+        return resource;
     }
 
     // // POST api/results

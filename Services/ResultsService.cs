@@ -20,7 +20,12 @@ namespace MMM_Bracket.API.Services
       return await _resultsRepository.ListAsync();
     }
 
-    public async Task<Battle> GetById(int id)
+    public async Task<IEnumerable<Battle>> ListAsync(int year)
+    {
+        return await _resultsRepository.ListAsync(year);
+    }
+
+    public async Task<Battle> GetByBattleId(int id)
     {
       return await _resultsRepository.GetById(id);
     }
