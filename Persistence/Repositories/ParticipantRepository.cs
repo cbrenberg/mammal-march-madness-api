@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MMM_Bracket.API.Domain.Models;
@@ -18,9 +19,9 @@ namespace MMM_Bracket.API.Persistence.Repositories
       return await _context.Participants.Include("Animal").Include("Battle").ToListAsync();
     }
 
-    public async Task<Participant> GetById(int id)
+    public async Task<IEnumerable<Participant>> GetByBattleId(int battleId)
     {
-      return await _context.Participants.Include("Animal").Include("Battle").FirstAsync(i => i.Id == id);
+      return await _context.Participants.Where(x => x.BattleId == battleId).Include("Animal").Include("Battle").ToListAsync();
     }
   }
 }

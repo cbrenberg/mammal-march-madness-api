@@ -20,9 +20,9 @@ namespace MMM_Bracket.API.Services
       return await _participantRepository.ListAsync();
     }
 
-    public async Task<Participant> GetById(int id)
+    public async Task<IEnumerable<Participant>> GetByBattleId(int battleId)
     {
-      return await _participantRepository.GetById(id);
+      return await _participantRepository.GetByBattleId(battleId);
     }
   }
 }

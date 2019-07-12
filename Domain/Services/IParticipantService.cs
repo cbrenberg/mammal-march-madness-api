@@ -7,7 +7,6 @@ namespace MMM_Bracket.API.Domain.Services
   public interface IParticipantService
   {
     Task<IEnumerable<Participant>> ListAsync();
-
-    Task<Participant> GetById(int id);
+    Task<IEnumerable<Participant>> GetByBattleId(int battleId);
   }
 }

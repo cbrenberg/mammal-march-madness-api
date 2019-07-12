@@ -22,7 +22,7 @@ namespace MMM_Bracket.API.Controllers
     }
 
 
-    // GET api/animals
+    // GET api/participants
     [HttpGet]
     public async Task<IEnumerable<ParticipantResource>> GetAllAsync()
     {
@@ -32,14 +32,14 @@ namespace MMM_Bracket.API.Controllers
       return resources;
     }
 
-    // GET api/animals/5
-    [HttpGet("{id}")]
-    public async Task<ParticipantResource> Get(int id)
+    // GET api/participants/5
+    [HttpGet("{battleId}")]
+    public async Task<IEnumerable<ParticipantResource>> GetByBattleId(int battleId)
     {
-      var participant = await _participantService.GetById(id);
-      var resource = _mapper.Map<Participant, ParticipantResource>(participant);
+        var participants = await _participantService.GetByBattleId(battleId);
+        var resources = _mapper.Map<IEnumerable<Participant>, IEnumerable<ParticipantResource>>(participants);
 
-      return resource;
+        return resources;
     }
 
     // // POST api/animals
