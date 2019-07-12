@@ -30,8 +30,8 @@ namespace MMM_Bracket.API.Services
         public void CreateAllBattlesForRound(Round round)
         {
             int roundNumberAsInt = (int)round;
-            int totalBattlesInRound = getTotalBattlesForRound(round);
-            int numberOfCategories = calculateNumberOfCategoriesRemainingInRound(round);
+            int totalBattlesInRound = GetTotalBattlesForRound(round);
+            int numberOfCategories = CalculateNumberOfCategoriesRemainingInRound(round);
 
             int battlesPerCategory = totalBattlesInRound / numberOfCategories;
 
@@ -58,7 +58,7 @@ namespace MMM_Bracket.API.Services
          * then the seed numbered k plays the seed numbered N - k + 1 in the initial matchup. 
          * (For example, seed k = 4 plays seed 16 - 4 + 1 = 13 in a 16-seed matchup.)
          */
-        private void seedParticipants(int year)
+        private void SeedParticipants(int year)
         {
             //TODO:
             //get all animals for current year
@@ -68,20 +68,18 @@ namespace MMM_Bracket.API.Services
                 //save participants
         }
 
-        private int getTotalBattlesForRound(Round round)
+        private int GetTotalBattlesForRound(Round round)
         {
             if (round == Round.SEMIFINAL || round == Round.WILD_CARD)
             {
                 return 2;
             }
-            else
-            {
-                return (int)(64 / Math.Pow(2d, (double)round));
-            }
+
+            return (int)(64 / Math.Pow(2d, (double)round));
         }
 
 
-        private int calculateNumberOfCategoriesRemainingInRound(Round round)
+        private int CalculateNumberOfCategoriesRemainingInRound(Round round)
         {
             switch (round)
             {
