@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using MMM_Bracket.API.Domain.Services;
 using MMM_Bracket.API.Domain.Models;
 using MMM_Bracket.API.Resources;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MMM_Bracket.API.Controllers
 {
@@ -22,7 +23,7 @@ namespace MMM_Bracket.API.Controllers
     }
 
 
-    // GET api/animals
+    // GET api/categories
     [HttpGet]
     public async Task<IEnumerable<CategoryResource>> GetAllAsync([FromQuery] int year)
     {
@@ -32,7 +33,7 @@ namespace MMM_Bracket.API.Controllers
       return resources;
     }
 
-    // GET api/animals/5
+    // GET api/categories/5
     [HttpGet("{id}")]
     public async Task<CategoryResource> Get(int id)
     {
@@ -42,19 +43,19 @@ namespace MMM_Bracket.API.Controllers
       return resource;
     }
 
-    // // POST api/animals
+    // // POST api/categories
     // [HttpPost]
     // public void Post([FromBody] string value)
     // {
     // }
 
-    // // PUT api/animals/5
+    // // PUT api/categories/5
     // [HttpPut("{id}")]
     // public void Put(int id, [FromBody] string value)
     // {
     // }
 
-    // // DELETE api/animals/5
+    // // DELETE api/categories/5
     // [HttpDelete("{id}")]
     // public void Delete(int id)
     // {
