@@ -10,6 +10,11 @@ namespace MMM_Bracket.API.Domain.Models
             Participants = new HashSet<Participant>();
         }
 
+        public Battle(int roundNumber)
+        {
+            this.RoundNumber = roundNumber;
+        }
+
         public int Id { get; set; }
         public DateTime Timestamp { get; set; }
         public string Location { get; set; }
