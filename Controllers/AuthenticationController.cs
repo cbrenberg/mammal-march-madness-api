@@ -1,18 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using MMM_Bracket.API.Domain.Services;
-using MMM_Bracket.API.Domain.Models.Configuration;
-using MMM_Bracket.API.Resources;
 using MMM_Bracket.API.Domain.Models;
-using Microsoft.AspNetCore.Identity;
+using MMM_Bracket.API.Domain.Models.Configuration;
+using MMM_Bracket.API.Domain.Services;
+using MMM_Bracket.API.Resources;
 
 namespace MMM_Bracket.API.Controllers
 {

@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using MMM_Bracket.API.Domain.Services;
 using MMM_Bracket.API.Domain.Models;
+using MMM_Bracket.API.Domain.Services;
 using MMM_Bracket.API.Resources;
 
 namespace MMM_Bracket.API.Controllers
 {
-  [Route("api/[controller]")]
+    [Route("api/[controller]")]
   [ApiController]
   public class ResultsController : ControllerBase
   {

@@ -1,17 +1,15 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using MMM_Bracket.API.Domain.Services;
+using Microsoft.AspNetCore.Mvc;
 using MMM_Bracket.API.Domain.Models;
+using MMM_Bracket.API.Domain.Services;
 using MMM_Bracket.API.Resources;
 
 namespace MMM_Bracket.API.Controllers
 {
-  [Authorize]
+    [Authorize]
   [Route("api/[controller]")]
   [ApiController]
   public class AnimalsController : ControllerBase
