@@ -7,7 +7,7 @@ using MMM_Bracket.API.Persistence.Contexts;
 
 namespace MMM_Bracket.API.Persistence.Repositories
 {
-  public class AnimalRepository : BaseRepository, IAnimalRepository
+    public class AnimalRepository : BaseRepository, IAnimalRepository
   {
     public AnimalRepository(mmm_bracketContext context) : base(context)
     {
