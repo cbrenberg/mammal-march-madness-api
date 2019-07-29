@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MMM_Bracket.API.Domain.Models;
-using MMM_Bracket.API.Domain.Repositories;
+using MMM_Bracket.API.Domain.Services;
 
 namespace MMM_Bracket.API.Services
 {
@@ -11,26 +12,28 @@ namespace MMM_Bracket.API.Services
         {
             WILD_CARD,
             ONE,
+            TWO,
             SWEET_SIXTEEN,
             ELITE_TRAIT,
             FINAL_ROAR,
             SEMIFINAL
         }
 
-        private IParticipantRepository _participantRepository; 
+        private IParticipantService _participantService;
+        private ICategoryService _categoryService;
 
-        public BracketService(IParticipantRepository participantRepository)
+        public BracketService(IParticipantService participantService, ICategoryService categoryService)
         {
-            //TODO: will need battle repository to store newly generated battle objects
+            //TODO: will need battle service to store newly generated battle objects
 
-            //TODO: will need participant repository to store correctly seeded participant objects
-            _participantRepository = participantRepository;
+            _participantService = participantService;
+            _categoryService = categoryService;
         }
 
-        public void CreateAllBattlesForRound(Round round)
+        public void CreateBattlesForRound(Round round)
         {
             int roundNumberAsInt = (int)round;
-            int totalBattlesInRound = GetTotalBattlesForRound(round);
+            int totalBattlesInRound = GetNumberOfBattlesForRound(round);
             int numberOfCategories = CalculateNumberOfCategoriesRemainingInRound(round);
 
             int battlesPerCategory = totalBattlesInRound / numberOfCategories;
@@ -50,7 +53,7 @@ namespace MMM_Bracket.API.Services
 
             }
 
-            //TODO: save new battles to db
+            //TODO: get winner participants from previous round, add correctly seeded participants to battles, save to db
         }
 
 
@@ -58,17 +61,50 @@ namespace MMM_Bracket.API.Services
          * then the seed numbered k plays the seed numbered N - k + 1 in the initial matchup. 
          * (For example, seed k = 4 plays seed 16 - 4 + 1 = 13 in a 16-seed matchup.)
          */
-        private void SeedParticipants(int year)
+
+        //TODO: generalize this method, or create helper method to do actual seeding, maybe using index?
+        private async void SeedBattles(int year)
         {
-            //TODO:
-            //get all animals for current year
-            //sort by category and seed
-            //for each category of sorted animals:
-                //create new participant objects by seed with formula in above comment
-                //save participants
+            //get all categories for current year
+            IEnumerable<Category> currentYearCategories = await _categoryService.GetAllCategoriesByYear(year);
+
+            //for each category:
+            foreach(Category category in currentYearCategories)
+            {
+                //get list of animals
+                ICollection<Animal> animalsList = category.Animals;
+
+                int numberOfAnimals = animalsList.Count(); //TODO: add .Where clause to get number remaining in current round
+
+                //for each animal in category:
+                foreach(Animal animal in animalsList)
+                {
+                    //find the correct competitor
+                    //TODO: make this a separate private helper method.
+                    //TODO: verify this algorithm past round 2
+                    Animal competitor = animalsList.FirstOrDefault(c =>
+                    {
+                        return Animal.
+                    });
+
+                    //TODO: create new participant object, add to List?
+
+                    //remove assignees from list
+                    animalsList.Remove(competitor);
+                    animalsList.Remove(animal);
+
+
+                }
+            }
+            //new participants require animalId and battleId
+            //TODO: how to get battleId of newly created battles? can entity framework track these? Or can battles/animals be assigned as objects?
+
+            //save participants
         }
 
-        private int GetTotalBattlesForRound(Round round)
+        //TODO: method that accepts list of winners and reseeds next round
+
+        private int GetNumberOfBattlesForRound(Round round)
         {
             if (round == Round.SEMIFINAL || round == Round.WILD_CARD)
             {
