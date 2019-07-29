@@ -30,7 +30,7 @@ namespace MMM_Bracket.API.Services
             _categoryService = categoryService;
         }
 
-        public void CreateBattlesForRound(Round round)
+        public void CreateEmptyBattlesForRound(Round round)
         {
             int roundNumberAsInt = (int)round;
             int totalBattlesInRound = GetNumberOfBattlesForRound(round);
@@ -52,10 +52,7 @@ namespace MMM_Bracket.API.Services
                 }
 
             }
-
-            //TODO: get winner participants from previous round, add correctly seeded participants to battles, save to db
         }
-
 
         /* The rule is that if the highest-numbered seed is N, where N is a power of 2, 
          * then the seed numbered k plays the seed numbered N - k + 1 in the initial matchup. 
@@ -63,7 +60,7 @@ namespace MMM_Bracket.API.Services
          */
 
         //TODO: generalize this method, or create helper method to do actual seeding, maybe using index?
-        private async void SeedBattles(int year)
+        private async void AssignParticipantsToBattlesForRound(Round round, int year)
         {
             //get all categories for current year
             IEnumerable<Category> currentYearCategories = await _categoryService.GetAllCategoriesByYear(year);
@@ -74,26 +71,19 @@ namespace MMM_Bracket.API.Services
                 //get list of animals
                 ICollection<Animal> animalsList = category.Animals;
 
-                int numberOfAnimals = animalsList.Count(); //TODO: add .Where clause to get number remaining in current round
+                int numberOfAnimals = animalsList.Count(); //TODO: is this needed?
 
                 //for each animal in category:
                 foreach(Animal animal in animalsList)
                 {
                     //find the correct competitor
-                    //TODO: make this a separate private helper method.
-                    //TODO: verify this algorithm past round 2
-                    Animal competitor = animalsList.FirstOrDefault(c =>
-                    {
-                        return Animal.
-                    });
+                    Animal competitor = animalsList.FirstOrDefault(c => Animal.AreCorrectlyMatchedInRound(animal, c, round));
 
                     //TODO: create new participant object, add to List?
 
                     //remove assignees from list
                     animalsList.Remove(competitor);
                     animalsList.Remove(animal);
-
-
                 }
             }
             //new participants require animalId and battleId
@@ -102,13 +92,11 @@ namespace MMM_Bracket.API.Services
             //save participants
         }
 
-        //TODO: method that accepts list of winners and reseeds next round
-
         private int GetNumberOfBattlesForRound(Round round)
         {
             if (round == Round.SEMIFINAL || round == Round.WILD_CARD)
             {
-                return 2;
+                return 1;
             }
 
             return (int)(64 / Math.Pow(2d, (double)round));
