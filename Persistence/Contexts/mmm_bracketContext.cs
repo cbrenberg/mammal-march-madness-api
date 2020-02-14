@@ -29,13 +29,13 @@ namespace MMM_Bracket.API.Persistence.Contexts
     public virtual DbSet<Participant> Participants { get; set; }
     public virtual DbSet<User> Users { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-      if (!optionsBuilder.IsConfigured)
-      {
-        optionsBuilder.UseNpgsql(_databaseSecrets.ConnectionString);
-      }
-    }
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //{
+    //  if (!optionsBuilder.IsConfigured)
+    //  {
+    //    optionsBuilder.UseNpgsql(_databaseSecrets.ConnectionString);
+    //  }
+    //}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

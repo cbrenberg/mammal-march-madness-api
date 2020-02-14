@@ -8,7 +8,7 @@ namespace MMM_Bracket.API.Services
 {
     public class BracketService
     {
-        public enum Round
+        public static enum Round
         {
             WILD_CARD,
             ONE,

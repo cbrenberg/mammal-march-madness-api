@@ -1,28 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MMM_Bracket.API.Domain.Models.Configuration;
 using MMM_Bracket.API.Domain.Repositories;
 using MMM_Bracket.API.Domain.Services;
-using MMM_Bracket.API.Domain.Models.Configuration;
+using MMM_Bracket.API.Mapping;
 using MMM_Bracket.API.Persistence.Contexts;
 using MMM_Bracket.API.Persistence.Repositories;
 using MMM_Bracket.API.Services;
-using AutoMapper;
-using JWT;
+using Microsoft.AspNetCore.Hosting;
 
 namespace MMM_Bracket.API
 {
@@ -39,11 +35,12 @@ namespace MMM_Bracket.API
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+      
+      services.AddAutoMapper(typeof(ModelToResourceProfile));
 
-      services.AddAutoMapper();
-
-      services.AddEntityFrameworkNpgsql().AddDbContext<mmm_bracketContext>().BuildServiceProvider();
+      services.AddDbContext<mmm_bracketContext>(options =>
+          options.UseNpgsql(Configuration.GetSection("Database").GetValue<string>("ConnectionString")));
 
       services.AddSingleton(Configuration);
       services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -107,9 +104,9 @@ namespace MMM_Bracket.API
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-      if (env.IsDevelopment())
+      if (env.EnvironmentName == "Development")
       {
         app.UseDeveloperExceptionPage();
       }
@@ -119,10 +116,12 @@ namespace MMM_Bracket.API
         app.UseHsts();
       }
 
+      app.UseRouting();
       app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
       app.UseAuthentication();
+      app.UseAuthorization();
       app.UseHttpsRedirection();
-      app.UseMvc();
+      app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
     }
   }
 }

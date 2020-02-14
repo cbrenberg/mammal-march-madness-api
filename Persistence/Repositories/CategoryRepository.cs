@@ -22,10 +22,14 @@ namespace MMM_Bracket.API.Persistence.Repositories
 
     public async Task<IEnumerable<Category>> GetAllCategoriesByYear(int year)
     {
-        return await GetAllCategories()
-                .Where(x => x.Year == year)
-                .Include(a => a.Animals.OrderBy(i => i.InitialSeed))
-                .ToListAsync();
+      var categories = await GetAllCategories()
+              .Where(x => x.Year == year)
+              .Include(a => a.Animals)
+              .ToListAsync();
+
+      categories.ForEach(x => x.Animals = x.Animals.OrderBy(a => a.InitialSeed).ToList());
+
+      return categories;
     }
 
     public async Task<Category> GetCategoryById(int id)
